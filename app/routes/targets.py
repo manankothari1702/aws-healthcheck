@@ -50,15 +50,16 @@ def add_target():
                     "error": (
                         "Invalid target URL. Must be a non-empty http(s) string "
                         f"no longer than {MAX_URL_LENGTH} characters."
-                    )
+                    ),
+                    "code": "INVALID_URL",
                 }
             ),
             400,
         )
 
     if url in _targets:
-        return jsonify({"message": "Target already registered", "url": url}), 200
+        return jsonify({"status": "exists", "url": url}), 200
 
     _targets.append(url)
     logger.info("target added url=%s total_targets=%d", url, len(_targets))
-    return jsonify({"message": "Target added", "url": url}), 201
+    return jsonify({"status": "created", "url": url}), 201

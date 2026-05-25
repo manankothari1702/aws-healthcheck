@@ -4,6 +4,8 @@ on:
     branches: [main]
   push:
     branches: [main]
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 jobs:
   lint-and-test:
     name: Lint and Test

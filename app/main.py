@@ -1,9 +1,14 @@
 """Application factory and entrypoint."""
 
+import logging
+
 from flask import Flask, jsonify
+from werkzeug.exceptions import HTTPException
 
 from app.config import Config
 from app.routes import health, metrics, targets
+
+logger = logging.getLogger(__name__)
 
 
 def create_app(config=None) -> Flask:
@@ -18,9 +23,24 @@ def create_app(config=None) -> Flask:
     app.register_blueprint(metrics.bp)
     app.register_blueprint(targets.bp)
 
-    @app.errorhandler(404)
-    def not_found(_err):
-        return jsonify({"error": "Not found"}), 404
+    @app.errorhandler(HTTPException)
+    def handle_http_exception(err):
+        return (
+            jsonify(
+                {"error": err.description, "code": err.name.upper().replace(" ", "_")}
+            ),
+            err.code,
+        )
+
+    @app.errorhandler(Exception)
+    def handle_unexpected_exception(err):
+        logger.exception("unhandled exception: %s", err)
+        return (
+            jsonify(
+                {"error": "Internal server error", "code": "INTERNAL_SERVER_ERROR"}
+            ),
+            500,
+        )
 
     return app
 

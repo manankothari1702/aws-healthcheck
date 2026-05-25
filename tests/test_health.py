@@ -91,4 +91,29 @@ def test_post_target_valid(client):
     url = "https://new.example.com"
     resp = client.post("/targets", json={"url": url})
     assert resp.status_code == 201
-    assert resp.get_json()["url"] == url
+    body = resp.get_json()
+    assert body["url"] == url
+    assert body["status"] == "created"
+
+
+def test_unknown_route_returns_json_404(client):
+    resp = client.get("/does-not-exist")
+    assert resp.status_code == 404
+    assert resp.is_json
+    body = resp.get_json()
+    assert "error" in body
+    assert "code" in body
+
+
+def test_unhandled_exception_returns_json_500(app, client):
+    @app.route("/__boom__")
+    def boom():
+        raise RuntimeError("kaboom")
+
+    app.config["PROPAGATE_EXCEPTIONS"] = False
+    resp = client.get("/__boom__")
+    assert resp.status_code == 500
+    assert resp.is_json
+    body = resp.get_json()
+    assert body["code"] == "INTERNAL_SERVER_ERROR"
+    assert "error" in body
