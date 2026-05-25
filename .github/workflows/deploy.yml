@@ -1,4 +1,4 @@
-name: Deploy
+﻿name: Deploy
 
 on:
   workflow_run:
@@ -49,7 +49,6 @@ jobs:
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           IMAGE_TAG: ${{ github.event.workflow_run.head_sha }}
-        working-directory: aws-healthcheck
         run: |
           IMAGE_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:${IMAGE_TAG}"
           LATEST_URI="${ECR_REGISTRY}/${ECR_REPOSITORY}:latest"
