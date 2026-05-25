@@ -1,4 +1,4 @@
-﻿name: Deploy
+name: Deploy
 
 on:
   workflow_run:
@@ -13,6 +13,7 @@ env:
   ECS_SERVICE: aws-healthcheck-svc
   ECS_TASK_FAMILY: aws-healthcheck-task
   CONTAINER_NAME: aws-healthcheck
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   deploy:
