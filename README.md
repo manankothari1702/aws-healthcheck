@@ -1,6 +1,19 @@
 # aws-healthcheck
 
+![CI](https://github.com/manankothari1702/aws-healthcheck/actions/workflows/ci.yml/badge.svg)
+![Deploy](https://github.com/manankothari1702/aws-healthcheck/actions/workflows/deploy.yml/badge.svg)
+
 Polls a configurable list of HTTP targets and exposes their liveness, latency, and aggregate health via JSON endpoints. Runs as a single Flask container on ECS Fargate behind an ALB.
+
+## What this project demonstrates
+
+- **Docker** — non-root user, digest-pinned base image, urllib healthcheck (no curl dependency)
+- **AWS ECS Fargate** — containerised deployment, no EC2 management
+- **AWS ALB** — stable DNS, automatic health-check routing, rolling deploys
+- **GitHub Actions CI/CD** — lint → test (94% coverage gate) → Docker build → ECR push → ECS rolling deploy
+- **OIDC authentication** — zero static AWS keys; trust policy scoped to single repo + main branch
+- **AWS CloudWatch** — container log streaming via awslogs driver
+- **pytest** — 19 tests, 94% coverage, failure paths + edge cases covered
 
 ## Architecture
 
