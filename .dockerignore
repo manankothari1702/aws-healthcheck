@@ -1,0 +1,17 @@
+.git
+.github
+.env
+__pycache__
+**/__pycache__
+*.pyc
+.pytest_cache
+.coverage
+terraform/
+tests/
+*.md
+docker-compose*.yml
+Makefile
+.venv
+venv
+.vscode
+.idea

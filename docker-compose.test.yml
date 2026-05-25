@@ -1,0 +1,11 @@
+services:
+  test:
+    build:
+      context: .
+      dockerfile: Dockerfile.test
+    image: aws-healthcheck:test
+    container_name: aws-healthcheck-test
+    environment:
+      PYTHONDONTWRITEBYTECODE: "1"
+      PYTHONUNBUFFERED: "1"
+    command: pytest tests/ --cov=app --cov-report=term-missing -v
