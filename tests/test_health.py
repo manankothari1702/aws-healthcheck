@@ -96,6 +96,35 @@ def test_post_target_valid(client):
     assert body["status"] == "created"
 
 
+def test_delete_target_valid(client):
+    url = "https://delete-me.example.com"
+    client.post("/targets", json={"url": url})
+    resp = client.delete("/targets", json={"url": url})
+    assert resp.status_code == 200
+    body = resp.get_json()
+    assert body["status"] == "deleted"
+    assert body["url"] == url
+
+
+def test_delete_target_not_found(client):
+    resp = client.delete("/targets", json={"url": "https://ghost.example.com"})
+    assert resp.status_code == 404
+    assert resp.get_json()["code"] == "NOT_FOUND"
+
+
+def test_delete_target_invalid_url(client):
+    resp = client.delete("/targets", json={"url": "not-a-url"})
+    assert resp.status_code == 400
+    assert "error" in resp.get_json()
+
+
+def test_delete_removes_from_list(client):
+    url = "https://gone.example.com"
+    client.post("/targets", json={"url": url})
+    client.delete("/targets", json={"url": url})
+    assert url not in client.get("/targets").get_json()["targets"]
+
+
 def test_unknown_route_returns_json_404(client):
     resp = client.get("/does-not-exist")
     assert resp.status_code == 404
